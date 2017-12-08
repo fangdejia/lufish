@@ -1,6 +1,6 @@
 var Phaser=Phaser||{};
 var LuFish=LuFish||{};
-var player,myboat;
+var platforms,player,myboat;
 var boat_float_range=120;
 var direct=1;
 LuFish.MainState = function () {
@@ -16,9 +16,7 @@ LuFish.MainState.prototype.make_fullscreen=function(){
 }
 LuFish.MainState.prototype.create=function() {
     "use strict";
-    game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.gravity.y = 1000;
-
+    game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0,0,'bg5');
     var bg4=game.add.tileSprite(0,0,WIDTH,HEIGHT,'bg4');
     bg4.autoScroll(-10,0);
@@ -28,17 +26,14 @@ LuFish.MainState.prototype.create=function() {
     var bg3=game.add.tileSprite(0,HEIGHT-bgh+50,bgw,bgh,'bg3');
     bg3.autoScroll(-20,0);
 
+    platforms=game.add.group();
+    platforms.enableBody=true;
     var btcache=game.cache.getImage('myboat');
     var btw=btcache.width;
     var bth=btcache.height;
-    console.log("btw:"+btw+",bth:"+bth);
-    myboat=game.add.sprite((WIDTH-btw)/2,HEIGHT-bth+30,'myboat');
-    game.physics.p2.enable(myboat,true);
-    //myboat.body.clearShapes();
-    //myboat.body.loadPolygon("myboat_body","myboat");
-    //myboat.body.immovable = true;
-
-    //game.add.tween(myboat).to({y:HEIGHT-bth+4},2000,null,true,0,Number.MAX_VALUE,true);
+    myboat=platforms.create((WIDTH-btw)/2,HEIGHT-bth+30,'myboat');
+    myboat.body.immovable = true;
+    game.add.tween(myboat).to({y:HEIGHT-bth+4},2000,null,true,0,Number.MAX_VALUE,true);
 
     var wtcache=game.cache.getImage('water');
     var wtw=wtcache.width;
@@ -60,7 +55,7 @@ LuFish.MainState.prototype.create=function() {
     player.animations.play('stand',20,true);
 }
 LuFish.MainState.prototype.update=function() {
-    //game.physics.arcade.collide(player,platforms);
+    game.physics.arcade.collide(player,platforms);
     //if(boat_float_range==0){
         //boat_float_range=120;
         //direct=direct*-1;
